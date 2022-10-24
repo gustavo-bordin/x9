@@ -5,13 +5,17 @@ import (
 	"fmt"
 
 	"github.com/gustavo-bordin/x9/x9/config"
+	_ "github.com/lib/pq"
 )
 
-func createConnUri(dbUser, dbPass, dbName string) string {
-	return fmt.Sprintf(
-		"user=%s password=%s dbname=%s sslmode=disable",
-		dbUser, dbPass, dbName,
-	)
+type Repository struct {
+	db *sql.DB
+}
+
+func NewRepository(db *sql.DB) Repository {
+	return Repository{
+		db: db,
+	}
 }
 
 func Connect(cfg config.Config) (*sql.DB, error) {
@@ -22,4 +26,11 @@ func Connect(cfg config.Config) (*sql.DB, error) {
 	}
 
 	return db, nil
+}
+
+func createConnUri(dbUser, dbPass, dbName string) string {
+	return fmt.Sprintf(
+		"user=%s password=%s dbname=%s sslmode=disable",
+		dbUser, dbPass, dbName,
+	)
 }
